@@ -8,6 +8,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { ToBoolean } from 'src/decorators/to-boolean.decorator';
 
 export class CreateUserDto {
   @IsString()
@@ -43,6 +44,7 @@ export class CreateUserDto {
   bio?: string;
 
   @IsBoolean()
+  @ToBoolean()
   @IsOptional()
   @ApiProperty({ required: false, default: true })
   public?: boolean = true;

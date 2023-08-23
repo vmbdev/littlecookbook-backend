@@ -48,10 +48,16 @@ model User {
   password      String
   name          String?     @db.VarChar(80)
   bio           String?     @db.VarChar(300)
+  role          Role        @default(USER)
   public        Boolean     @default(true)
   recipes       Recipe[]
   ingredients   Ingredient[]
   tags          Tag[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
 }
