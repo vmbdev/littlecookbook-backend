@@ -7,4 +7,5 @@ export const password = {
 
 export const session = {
   secret: '12345',
+  redisUrl: 'redis://localhost:6379',
 };

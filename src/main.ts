@@ -3,9 +3,21 @@ import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { createClient } from 'redis';
+import RedisStore from 'connect-redis';
 import { session as sessionConfig } from './littlecookbook.config';
 import { AppModule } from './app.module';
 import { PrismaClientExceptionFilter } from './prisma/prisma-client-exception/prisma-client-exception.filter';
+
+async function createRedisStore(): Promise<RedisStore> {
+  const redisClient = createClient({ url: sessionConfig.redisUrl });
+  await redisClient.connect();
+  const redisStore = new RedisStore({
+    client: redisClient,
+  });
+
+  return redisStore;
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,6 +28,7 @@ async function bootstrap() {
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
   app.use(
     session({
+      store: await createRedisStore(),
       // proxy: isProduction,
       secret: sessionConfig.secret,
       resave: false,

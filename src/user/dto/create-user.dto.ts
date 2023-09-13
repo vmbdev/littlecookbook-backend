@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsEmail,
@@ -33,19 +33,20 @@ export class CreateUserDto {
   @IsNotEmpty()
   @MaxLength(80)
   @IsOptional()
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   name?: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(300)
   @IsOptional()
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional()
   bio?: string;
 
   @IsBoolean()
   @ToBoolean()
   @IsOptional()
-  @ApiProperty({ required: false, default: true })
+  @ApiPropertyOptional()
+  @ApiProperty({ default: true })
   public?: boolean = true;
 }

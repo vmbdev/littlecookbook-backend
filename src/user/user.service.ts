@@ -12,7 +12,7 @@ export class UserService {
     private password: PasswordService,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  create(createUserDto: CreateUserDto): Promise<User> {
     return this.prisma.user.create({ data: createUserDto });
   }
 
@@ -48,6 +48,6 @@ export class UserService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.prisma.user.delete({ where: { id } });
   }
 }

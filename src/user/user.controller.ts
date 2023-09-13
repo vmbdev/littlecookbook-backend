@@ -10,6 +10,7 @@ import {
   UseGuards,
   Req,
   UnauthorizedException,
+  HttpCode,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -37,12 +38,11 @@ export class UserController {
   @Post()
   @ApiCreatedResponse({ status: 200, type: UserEntity })
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
-    const user = createUserDto;
-    const passwdCheck = this.password.check(user.password);
+    const passwdCheck = this.password.check(createUserDto.password);
 
     if (passwdCheck.valid) {
       const hashedPwd = await this.password.hash(createUserDto.password);
-      user.password = hashedPwd;
+      createUserDto.password = hashedPwd;
 
       return new UserEntity(await this.userService.create(createUserDto));
     } else {
@@ -88,12 +88,11 @@ export class UserController {
     @Req() request: RequestWithUser,
   ) {
     if (request.user.id === id || request.user.role === 'ADMIN') {
-      const user = updateUserDto;
-      const passwdCheck = this.password.check(user.password);
+      const passwdCheck = this.password.check(updateUserDto.password);
 
       if (passwdCheck.valid) {
         const hashedPwd = await this.password.hash(updateUserDto.password);
-        user.password = hashedPwd;
+        updateUserDto.password = hashedPwd;
 
         return new UserEntity(await this.userService.update(id, updateUserDto));
       } else {
@@ -105,6 +104,8 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminGuard)
+  @HttpCode(204)
   @ApiOkResponse({ status: 204 })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);
