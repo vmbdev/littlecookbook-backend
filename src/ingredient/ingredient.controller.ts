@@ -67,25 +67,28 @@ export class IngredientController {
   @UseGuards(LoggedInGuard)
   @ApiOkResponse({ status: 200, type: IngredientEntity })
   @ApiUnauthorizedResponse()
+  @ApiNotFoundResponse()
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateIngredientDto: UpdateIngredientDto,
     @Req() request: RequestWithUser,
   ): Promise<IngredientEntity> {
-    const ingredient = await this.ingredientService.findOne(id);
+    const ing = await this.ingredientService.findOne(id);
 
-    if (
-      ingredient &&
-      (request.user.id === ingredient.userId || request.user.role === 'ADMIN')
-    ) {
-      const updIngredient = await this.ingredientService.update(
-        id,
-        updateIngredientDto,
-      );
+    if (ing) {
+      // user is owner or admin
+      if (request.user.id === ing.userId || request.user.role === 'ADMIN') {
+        const updIngredient = await this.ingredientService.update(
+          id,
+          updateIngredientDto,
+        );
 
-      return new IngredientEntity(updIngredient);
+        return new IngredientEntity(updIngredient);
+      } else {
+        throw new UnauthorizedException();
+      }
     } else {
-      throw new UnauthorizedException();
+      throw new NotFoundException();
     }
   }
 
@@ -93,20 +96,23 @@ export class IngredientController {
   @UseGuards(LoggedInGuard)
   @HttpCode(204)
   @ApiOkResponse({ status: 204, description: 'Ingredient removed' })
+  @ApiUnauthorizedResponse({ description: 'Need to be ADMIN or owner.' })
   @ApiNotFoundResponse({ description: 'Ingredient not found' })
   async remove(
     @Param('id', ParseIntPipe) id: number,
     @Req() request: RequestWithUser,
   ): Promise<void> {
-    const ingredient = await this.ingredientService.findOne(id);
+    const ing = await this.ingredientService.findOne(id);
 
-    if (
-      ingredient &&
-      (request.user.id === ingredient.userId || request.user.role === 'ADMIN')
-    ) {
-      await this.ingredientService.remove(id);
+    if (ing) {
+      // user is owner or admin
+      if (request.user.id === ing.userId || request.user.role === 'ADMIN') {
+        await this.ingredientService.remove(id);
 
-      return null;
+        return null;
+      } else {
+        throw new UnauthorizedException();
+      }
     } else {
       throw new NotFoundException();
     }

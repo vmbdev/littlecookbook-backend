@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PasswordCheckResult } from './password.model';
-import { password as passwordConfig } from '../../littlecookbook.config';
 
 @Injectable()
 export class PasswordService {
+  constructor(private readonly config: ConfigService) {}
+
   hash(password: string) {
     return bcrypt.hash(password, 10);
   }
@@ -16,27 +18,27 @@ export class PasswordService {
   check(password: string): PasswordCheckResult {
     const result: PasswordCheckResult = { valid: true, data: {} };
 
-    result.data.minLength = password.length >= passwordConfig.minLength;
+    result.data.minLength =
+      password.length >= this.config.get<number>('password.minLength');
+    result.valid &&= result.data.minLength;
 
-    if (passwordConfig.requireUppercase) {
+    if (this.config.get<boolean>('password.requireUppercase')) {
       const regex = /.*([A-Z]).*/;
       result.data.hasUppercase = regex.test(password);
       result.valid &&= result.data.hasUppercase;
     }
 
-    if (passwordConfig.requireNumber) {
+    if (this.config.get<boolean>('password.requireNumber')) {
       const regex = /.*(\d).*/;
       result.data.hasNumber = regex.test(password);
       result.valid &&= result.data.hasNumber;
     }
 
-    if (passwordConfig.requireNonAlphanumeric) {
+    if (this.config.get<boolean>('password.requireNonAlphanumeric')) {
       const regex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
       result.data.hasNonAlphanumeric = regex.test(password);
       result.valid &&= result.data.hasNonAlphanumeric;
     }
-
-    result.valid &&= result.data.minLength;
 
     return result;
   }
