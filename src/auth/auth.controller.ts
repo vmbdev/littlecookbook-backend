@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { LocalAuthGuard } from './guards/local/local.auth.guard';
-import { LoggedInGuard } from './guards/logged-in/logged-in.guard';
+import { LocalAuthGuard } from 'src/guards/local/local.auth.guard';
+import { LoggedInGuard } from 'src/guards/logged-in/logged-in.guard';
 import { RequestWithUser } from './requestwithuser.model';
 
 @Controller('auth')

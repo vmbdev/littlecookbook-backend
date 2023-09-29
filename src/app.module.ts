@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 import { IngredientModule } from './ingredient/ingredient.module';
+import { RecipeModule } from './recipe/recipe.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -14,11 +14,11 @@ import configuration from './config/configuration';
     PrismaModule,
     AuthModule,
     IngredientModule,
+    RecipeModule,
     ConfigModule.forRoot({
       load: [configuration],
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

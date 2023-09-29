@@ -18,7 +18,7 @@ import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { RequestWithUser } from 'src/auth/requestwithuser.model';
 import { IngredientEntity } from './entities/ingredient.entity';
-import { LoggedInGuard } from 'src/auth/guards/logged-in/logged-in.guard';
+import { LoggedInGuard } from 'src/guards/logged-in/logged-in.guard';
 import {
   ApiNotFoundResponse,
   ApiOkResponse,

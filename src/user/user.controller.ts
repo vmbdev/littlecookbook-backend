@@ -23,8 +23,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { PasswordService } from './password/password.service';
 import { PasswordInvalidException } from './user.exceptions';
-import { LoggedInGuard } from 'src/auth/guards/logged-in/logged-in.guard';
-import { AdminGuard } from 'src/auth/guards/admin/admin.guard';
+import { LoggedInGuard } from 'src/guards/logged-in/logged-in.guard';
+import { AdminGuard } from 'src/guards/admin/admin.guard';
 import { RequestWithUser } from 'src/auth/requestwithuser.model';
 
 @Controller('user')
